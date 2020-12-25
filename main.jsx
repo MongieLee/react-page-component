@@ -5,8 +5,6 @@ export default class Pagecomponent extends Component {
   static defaultProps = {
     preBtnText: "<", //上一页的文本
     nextBtnText: ">", //下一页的文本
-    showPageNumber: 6,
-    startShowNumber: 1,
     onPageChange: (currentPage) => {}, //页码跳转回调
     showQuickJumper: true, //是否展示快速跳转输入框
     showTotal: true, //是否展示总条数
@@ -24,10 +22,8 @@ export default class Pagecomponent extends Component {
 
   // 页码改变时
   pageChange = (currentPage) => {
-    const { showPageNumber } = this.props;
     const { currentPage: stateCurrentPage } = this.state;
     if (currentPage === stateCurrentPage) return;
-    let startShowNumber = currentPage >= showPageNumber ? currentPage - 2 : 1;
     this.setState({ currentPage });
     this.props.onPageChange.call(undefined, currentPage);
   };
@@ -46,9 +42,11 @@ export default class Pagecomponent extends Component {
     this.pageChange(currentPage - 1);
   };
 
+  nextArrowPageChange = () => {};
+
   //初始化分页元素
   getPage = () => {
-    const { showPageNumber, nextBtnText, preBtnText } = this.props;
+    const { nextBtnText, preBtnText } = this.props;
     const { pageSize, currentPage } = this.state;
     let contentList = [];
     if (pageSize <= 9) {
@@ -63,10 +61,39 @@ export default class Pagecomponent extends Component {
           </li>
         );
       });
+    } else if (currentPage + 4 >= pageSize) {
+      contentList = [
+        <li
+          onClick={() => {
+            this.pageChange(1);
+          }}
+        >
+          1
+        </li>,
+        <li
+          onClick={() => {
+            this.pageChange(currentPage - 5);
+          }}
+        >
+          ...
+        </li>,
+      ].concat(
+        Array.from({ length: 9 - 2 }).map((_, i) => {
+          return (
+            <li
+              onClick={() => this.pageChange(i + pageSize - 9 + 3)}
+              className={
+                currentPage === i + pageSize - 9 + 3 ? "page-item-active" : ""
+              }
+              key={i + Math.random()}
+            >
+              {i + pageSize - 9 + 3}
+            </li>
+          );
+        })
+      );
     } else if (currentPage - 4 <= 1) {
-      console.log("irun");
-      contentList = new Array(pageSize - 2)
-        .fill("")
+      contentList = Array.from({ length: 9 - 2 })
         .map((_, i) => {
           return (
             <li
@@ -78,48 +105,57 @@ export default class Pagecomponent extends Component {
             </li>
           );
         })
-        .concat([<li>...</li>, <li>{pageSize}</li>]);
-      console.log(contentList);
-    } else {
-      let preList = [];
-      let nextList = [];
-      let mainList = [];
-      if (currentPage - 5 >= 0) {
-        preList.push(
+        .concat([
           <li
-            onClick={() => this.pageChange(1)}
-            className={currentPage === 1 ? "page-item-active" : ""}
-            key={`first` + Math.random()}
-          >
-            {1}
-          </li>,
-          <li
-            onClick={() => this.pageChange(currentPage - 5)}
-            key={`...` + Math.random()}
-          >
-            ...
-          </li>
-        );
-      }
-      console.log("preList: ", preList);
-      if (currentPage + 5 <= pageSize) {
-        nextList.push(
-          <li
-            onClick={() => this.pageChange(currentPage - 5)}
-            key={`...` + Math.random()}
+            onClick={() => {
+              this.pageChange(currentPage + 5);
+            }}
+            title="向后5页"
           >
             ...
           </li>,
           <li
-            onClick={() => this.pageChange(1)}
-            className={currentPage === pageSize ? "page-item-active" : ""}
-            key={`last` + Math.random()}
+            onClick={() => {
+              this.pageChange(pageSize);
+            }}
           >
             {pageSize}
-          </li>
-        );
-      }
-      contentList = [...preList, ...nextList];
+          </li>,
+        ]);
+    } else {
+      // eslint-disable-next-line no-sparse-arrays
+      contentList = [
+        <li onClick={() => this.pageChange(1)}>1</li>,
+        <li
+          onClick={() => {
+            this.pageChange(currentPage - 5);
+          }}
+        >
+          ...
+        </li>,
+        ,
+        ...Array.from({ length: 9 - 4 }).map((_, i) => {
+          return (
+            <li
+              onClick={() => this.pageChange(i + currentPage - 2)}
+              className={
+                currentPage === i + currentPage - 2 ? "page-item-active" : ""
+              }
+              key={i + Math.random()}
+            >
+              {i + currentPage - 2}
+            </li>
+          );
+        }),
+        <li
+          onClick={() => {
+            this.pageChange(currentPage + 5);
+          }}
+        >
+          ...
+        </li>,
+        <li onClick={() => this.pageChange(pageSize)}>{pageSize}</li>,
+      ];
     }
 
     contentList.unshift(
@@ -187,17 +223,10 @@ export default class Pagecomponent extends Component {
   };
 
   render() {
-    const { pageSize, inputValue } = this.state;
+    const { inputValue } = this.state;
     const { showQuickJumper, showTotal, totalPage } = this.props;
     return (
-      <div
-        style={{
-          display: `flex`,
-          fontSize: 14,
-          alignItems: "center",
-          padding: `4px 0`,
-        }}
-      >
+      <div className="page-container">
         {showTotal && (
           <span
             style={{ color: `#333`, marginRight: `.5em`, marginLeft: `1em` }}
@@ -208,15 +237,13 @@ export default class Pagecomponent extends Component {
         <ul className="page-wrapper">{this.getPage()}</ul>
         {showQuickJumper && (
           <div className="qucik-jump-wrapper">
-            <div>
-              跳至
-              <input
-                onKeyUp={this.onInputKeyUp}
-                value={inputValue}
-                onChange={this.inputChangeHandler}
-              />
-              页
-            </div>
+            跳至
+            <input
+              onKeyUp={this.onInputKeyUp}
+              value={inputValue}
+              onChange={this.inputChangeHandler}
+            />
+            页
           </div>
         )}
       </div>
