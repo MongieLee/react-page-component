@@ -218,7 +218,7 @@ export default class Pagecomponent extends Component {
       } else if (value > totalPageSize) {
         //如果输入的合法数字大于总页数，则跳转至最后一页
         if (totalPageSize === currentPage) {
-          //如果当前已经是最后一页，则只清空输入框
+          //如果当前已经是第一页，则只清空输入框
           this.setState({ inputValue: "" });
         } else {
           this.setState({ currentPage: totalPageSize, inputValue: "" });

@@ -4,16 +4,25 @@ import React from "react";
 function App() {
   const ref = React.createRef();
   return (
-    <>
+    <div
+      style={{
+        height: `100vh`,
+        window: `100vw`,
+        display: "flex",
+        flexDirection: "column",
+        justifyContent: "center",
+        alignItems: "center",
+      }}
+    >
       <Page
-        total={130}
-        currentPage={5}
+        total={202}
+        currentPage={1}
         onPageChange={(e) => {
-          ref.current.innerHTML = `这是回调函数的返回值${e}`;
+          ref.current.innerHTML = `这是回调函数的返回值:${e}`;
         }}
       />
       <div ref={ref}></div>
-    </>
+    </div>
   );
 }
 
