@@ -1,0 +1,59 @@
+.page-container {
+    display: flex;
+    font-size: 14px;
+    align-items: center;
+    padding: 4px 0;
+}
+
+.page-wrapper {
+    display: flex;
+    margin-left: .5em;
+    align-items: center;
+}
+
+.page-wrapper li.page-item-active {
+    color: #1890ff;
+    border-color: #1890ff;
+}
+
+.page-wrapper li {
+    border: 1px #d9d9d9 solid;
+    cursor: pointer;
+    padding: 4px 12px;
+    margin-right: .5em;
+    margin-left: .5em;
+    color: #272727;
+    border-radius: 2px;
+}
+
+.page-wrapper li:hover {
+    color: #1890ff;
+    border-color: #1890ff;
+}
+
+.page-wrapper li.disabled {
+    color: rgba(0, 0, 0, .25);
+    border-color: #d9d9d9;
+    cursor: not-allowed;
+}
+
+.qucik-jump-wrapper {
+    margin-left: 1em;
+}
+
+.qucik-jump-wrapper input {
+    transition: all .3s;
+    width: 40px;
+    padding: 4px 8px;
+    border: 1px solid #d9d9d9;
+    margin: 0 8px;
+    border-radius: 2px;
+    line-height: 1.45;
+}
+
+.qucik-jump-wrapper input:focus, .qucik-jump-wrapper input:hover {
+    border-color: #40a9ff;
+    border-right-width: 1px!important;
+    outline: 0;
+    box-shadow: 0 0 0 2px rgba(24, 144, 255, .2);
+}
